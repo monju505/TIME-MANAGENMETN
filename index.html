@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>এডভান্সড টাইম ম্যানেজমেন্ট সিস্টেম</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #4ea8de;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+        
+        .date-display {
+            font-size: 1.2rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .task-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .priority-badges {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .priority-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .priority-low {
+            background-color: #e9f7ef;
+            color: #28a745;
+        }
+        
+        .priority-medium {
+            background-color: #fff3cd;
+            color: #ffc107;
+        }
+        
+        .priority-high {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+        
+        .priority-selected {
+            border: 2px solid currentColor;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            background: white;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .task-info h3 {
+            margin-bottom: 5px;
+        }
+        
+        .task-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-complete {
+            background-color: var(--success);
+        }
+        
+        .btn-delete {
+            background-color: var(--danger);
+        }
+        
+        .btn-move {
+            background-color: var(--warning);
+        }
+        
+        .time-blocks {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .time-block {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .time-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .time-block.selected {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .time-block.booked {
+            background-color: var(--danger);
+            color: white;
+            cursor: not-allowed;
+        }
+        
+        .ideal-vs-reality {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--success);
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+        
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .pending-task {
+            border-left-color: var(--warning);
+            background-color: #fff9e6;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* মাসিক স্ট্যাটস স্টাইল */
+        .monthly-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        
+        .month-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .category-item {
+            margin-bottom: 10px;
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--primary);
+        }
+        
+        /* বাকি কাজ স্টাইল */
+        .pending-tasks-container {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .pending-tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .pending-task-item {
+            background-color: #fff9e6;
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .pending-task-info h3 {
+            margin-bottom: 5px;
+            color: #856404;
+        }
+        
+        .pending-task-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+        
+        .pending-task-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-add-today {
+            background-color: var(--success);
+        }
+        
+        .btn-ignore {
+            background-color: #6c757d;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: var(--success);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* নতুন স্টাইলস */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .timer-display {
+            font-size: 2rem;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+        
+        .voice-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .voice-btn {
+            background-color: var(--info);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .goal-progress {
+            margin-top: 15px;
+        }
+        
+        .achievement-badge {
+            display: inline-block;
+            background-color: var(--warning);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .recommendation-item {
+            padding: 10px;
+            border-left: 3px solid var(--info);
+            background-color: #e8f4fd;
+            margin-bottom: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .tab-container {
+            margin-top: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .insight-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .insight-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 5px 0;
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>এডভান্সড টাইম ম্যানেজমেন্ট সিস্টেম</h1>
+                <div class="date-display" id="current-date"></div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <!-- বাম কলাম -->
+            <div>
+                <div class="card">
+                    <h2>নতুন কাজ যোগ করুন</h2>
+                    <form class="task-form" id="task-form">
+                        <div class="form-group">
+                            <label for="task-title">কাজের শিরোনাম</label>
+                            <input type="text" id="task-title" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="task-description">বিবরণ</label>
+                            <textarea id="task-description" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>প্রাধান্য</label>
+                            <div class="priority-badges">
+                                <div class="priority-badge priority-low" data-priority="low">কম</div>
+                                <div class="priority-badge priority-medium" data-priority="medium">মধ্যম</div>
+                                <div class="priority-badge priority-high priority-selected" data-priority="high">উচ্চ</div>
+                            </div>
+                            <input type="hidden" id="task-priority" value="high">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="task-category">ক্যাটাগরি</label>
+                            <select id="task-category">
+                                <option value="work">চাকুরি</option>
+                                <option value="youtube">ইউটিউব</option>
+                                <option value="personal">ব্যক্তিগত</option>
+                                <option value="health">স্বাস্থ্য</option>
+                                <option value="other">অন্যান্য</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="task-time">সময় (মিনিট)</label>
+                            <input type="number" id="task-time" min="5" max="480" value="30">
+                        </div>
+                        
+                        <button type="submit">কাজ যোগ করুন</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h2>আজকের কাজের তালিকা</h2>
+                    <ul class="task-list" id="task-list">
+                        <div class="loading">ডেটা লোড হচ্ছে...</div>
+                    </ul>
+                    
+                    <!-- বাকি কাজের সেকশন -->
+                    <div class="pending-tasks-container" id="pending-tasks-container" style="display: none;">
+                        <div class="pending-tasks-header">
+                            <h3>গত দিনের বাকি কাজ</h3>
+                            <button id="add-all-pending" class="btn-add-today">সবগুলো যোগ করুন</button>
+                        </div>
+                        <ul class="task-list" id="pending-tasks-list">
+                            <!-- বাকি কাজগুলো এখানে দেখাবে -->
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>স্মার্ট টাস্ক সুপারিশ</h2>
+                    <div id="task-recommendations">
+                        <div class="loading">সুপারিশ লোড হচ্ছে...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ডান কলাম -->
+            <div>
+                <div class="card">
+                    <h2>পোমোডোরো টাইমার</h2>
+                    <div class="timer-display" id="timer-display">25:00</div>
+                    <div class="timer-controls">
+                        <button id="start-timer">শুরু করুন</button>
+                        <button id="pause-timer">বিরতি</button>
+                        <button id="reset-timer">রিসেট</button>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label for="current-task-timer">বর্তমান কাজ:</label>
+                        <select id="current-task-timer">
+                            <option value="">কাজ নির্বাচন করুন</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>লক্ষ্য ট্র্যাকিং</h2>
+                    <div class="form-group">
+                        <label for="goal-category">ক্যাটাগরি</label>
+                        <select id="goal-category">
+                            <option value="work">চাকুরি</option>
+                            <option value="youtube">ইউটিউব</option>
+                            <option value="personal">ব্যক্তিগত</option>
+                            <option value="health">স্বাস্থ্য</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-target">লক্ষ্য (ঘন্টা)</label>
+                        <input type="number" id="goal-target" min="1" max="20" value="5">
+                    </div>
+                    <button id="set-goal">লক্ষ্য নির্ধারণ করুন</button>
+                    
+                    <div class="goal-progress">
+                        <h3>লক্ষ্য অগ্রগতি</h3>
+                        <div id="goals-list">
+                            <!-- লক্ষ্যগুলো এখানে দেখাবে -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>আর্দশ দিন বনাম ব্যাস্তব দিন</h2>
+                    <div class="ideal-vs-reality">
+                        <div>
+                            <h3>আর্দশ দিন</h3>
+                            <div id="ideal-day">
+                                <p>ইউটিউব: <span id="ideal-youtube">2</span> ঘন্টা</p>
+                                <p>চাকুরি: <span id="ideal-work">8</span> ঘন্টা</p>
+                                <p>ব্যক্তিগত: <span id="ideal-personal">2</span> ঘন্টা</p>
+                                <p>স্বাস্থ্য: <span id="ideal-health">1</span> ঘন্টা</p>
+                                <p>ঘুম: <span id="ideal-sleep">8</span> ঘন্টা</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3>ব্যাস্তব দিন</h3>
+                            <div id="reality-day">
+                                <p>ইউটিউব: <span id="reality-youtube">0</span> ঘন্টা</p>
+                                <p>চাকুরি: <span id="reality-work">0</span> ঘন্টা</p>
+                                <p>ব্যক্তিগত: <span id="reality-personal">0</span> ঘন্টা</p>
+                                <p>স্বাস্থ্য: <span id="reality-health">0</span> ঘন্টা</p>
+                                <p>ঘুম: <span id="reality-sleep">0</span> ঘন্টা</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <h3>আজকের অগ্রগতি</h3>
+                        <div class="progress-bar">
+                            <div class="progress" id="daily-progress" style="width: 0%"></div>
+                        </div>
+                        <p id="progress-text">0% সম্পূর্ণ</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- নতুন ফিচার সেকশন -->
+        <div class="feature-grid">
+            <div class="card">
+                <h2>প্রোডাক্টিভিটি অ্যানালিটিক্স</h2>
+                <div class="tab-container">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="daily">দৈনিক</div>
+                        <div class="tab" data-tab="weekly">সাপ্তাহিক</div>
+                        <div class="tab" data-tab="monthly">মাসিক</div>
+                    </div>
+                    
+                    <div class="tab-content active" id="daily-tab">
+                        <div class="insight-card">
+                            <h4>পিক পারফরম্যান্স সময়</h4>
+                            <div class="insight-value" id="peak-time">লোড হচ্ছে...</div>
+                        </div>
+                        <div class="insight-card">
+                            <h4>গড় কাজ সম্পূর্ণ সময়</h4>
+                            <div class="insight-value" id="avg-completion-time">লোড হচ্ছে...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="weekly-tab">
+                        <div class="insight-card">
+                            <h4>সেরা উৎপাদনশীল দিন</h4>
+                            <div class="insight-value" id="best-day">লোড হচ্ছে...</div>
+                        </div>
+                        <div class="insight-card">
+                            <h4>সাপ্তাহিক সাফল্যের হার</h4>
+                            <div class="insight-value" id="weekly-success-rate">লোড হচ্ছে...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="monthly-tab">
+                        <div class="insight-card">
+                            <h4>মোট উৎপাদনশীল সময়</h4>
+                            <div class="insight-value" id="monthly-productive-time">লোড হচ্ছে...</div>
+                        </div>
+                        <div class="insight-card">
+                            <h4>সেরা পারফর্মিং ক্যাটাগরি</h4>
+                            <div class="insight-value" id="best-category">লোড হচ্ছে...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>ডেটা ভিজুয়ালাইজেশন</h2>
+                <div class="chart-container">
+                    <canvas id="productivityChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>গেমিফিকেশন ও অর্জন</h2>
+                <div id="achievements-container">
+                    <div class="loading">অর্জন লোড হচ্ছে...</div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <h3>আপনার পয়েন্ট: <span id="user-points">0</span></h3>
+                    <div class="progress-bar">
+                        <div class="progress" id="level-progress" style="width: 0%"></div>
+                    </div>
+                    <p>পরবর্তী লেভেল: <span id="next-level">10</span> পয়েন্ট</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>ভয়েস কমান্ড</h2>
+                <div class="voice-control">
+                    <div class="voice-btn" id="voice-command-btn">
+                        <span>🎤</span>
+                    </div>
+                    <span id="voice-status">মাইক্রোফোন চাপুন</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <h4>উপলব্ধ কমান্ড:</h4>
+                    <ul>
+                        <li>"নতুন কাজ যোগ কর [কাজের নাম]"</li>
+                        <li>"আজকের কাজ দেখাও"</li>
+                        <li>"টাইমার শুরু কর"</li>
+                        <li>"কাজ সম্পূর্ণ কর [কাজের নাম]"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- মাসিক ডেটা সেকশন -->
+        <div class="card">
+            <h2>মাসিক অগ্রগতি</h2>
+            <div class="month-selector">
+                <button class="nav-btn" id="prev-month">← পূর্বের মাস</button>
+                <h3 id="current-month">মাসের নাম</h3>
+                <button class="nav-btn" id="next-month">পরের মাস →</button>
+            </div>
+            
+            <div class="monthly-stats">
+                <div class="stat-card">
+                    <div>মোট কাজ</div>
+                    <div class="stat-value" id="monthly-total">0</div>
+                    <div>টি কাজ</div>
+                </div>
+                <div class="stat-card">
+                    <div>সম্পূর্ণ কাজ</div>
+                    <div class="stat-value" id="monthly-completed">0</div>
+                    <div>টি কাজ</div>
+                </div>
+                <div class="stat-card">
+                    <div>সাফল্যের হার</div>
+                    <div class="stat-value" id="monthly-success">0%</div>
+                    <div>গড়</div>
+                </div>
+                <div class="stat-card">
+                    <div>মোট সময়</div>
+                    <div class="stat-value" id="monthly-time">0</div>
+                    <div>ঘন্টা</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <h3>ক্যাটাগরি অনুযায়ী সময় বণ্টন</h3>
+                <div id="category-distribution">
+                    <!-- ক্যাটাগরি ডিস্ট্রিবিউশন এখানে দেখাবে -->
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>এডভান্সড টাইম ম্যানেজমেন্ট সিস্টেম - আপনার সময়কে কার্যকরভাবে ব্যবস্থাপনা করুন</p>
+        </footer>
+    </div>
+
+    <script>
+        // Firebase কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyCjgH6gTcTO24BLYnMr-liWWhKRpnQENXw",
+            authDomain: "saleh-life.firebaseapp.com",
+            databaseURL: "https://saleh-life-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "saleh-life",
+            storageBucket: "saleh-life.firebasestorage.app",
+            messagingSenderId: "464178427546",
+            appId: "1:464178427546:web:f9a876f22b7091e23d1123",
+            measurementId: "G-26G9TK0PE8"
+        };
+
+        // Firebase ইনিশিয়ালাইজেশন
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // গ্লোবাল ভেরিয়েবল
+        let tasks = [];
+        let goals = [];
+        let achievements = [];
+        let userPoints = 0;
+        let currentLevel = 1;
+        let timerInterval = null;
+        let timerSeconds = 25 * 60;
+        let isTimerRunning = false;
+        let currentTimerTask = null;
+        
+        // DOM কনটেন্ট লোড হওয়ার পর ইন্সট্যান্সিয়েশন
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+        
+        function initializeApp() {
+            // বর্তমান তারিখ দেখানো
+            const currentDateElement = document.getElementById('current-date');
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateElement.textContent = now.toLocaleDateString('bn-BD', options);
+            
+            // প্রাধান্য নির্বাচন
+            const priorityBadges = document.querySelectorAll('.priority-badge');
+            const taskPriorityInput = document.getElementById('task-priority');
+            
+            priorityBadges.forEach(badge => {
+                badge.addEventListener('click', () => {
+                    priorityBadges.forEach(b => b.classList.remove('priority-selected'));
+                    badge.classList.add('priority-selected');
+                    taskPriorityInput.value = badge.getAttribute('data-priority');
+                });
+            });
+            
+            // কাজ ফর্ম জমা দেওয়া
+            const taskForm = document.getElementById('task-form');
+            taskForm.addEventListener('submit', handleTaskSubmit);
+            
+            // টাইমার কন্ট্রোল
+            document.getElementById('start-timer').addEventListener('click', startTimer);
+            document.getElementById('pause-timer').addEventListener('click', pauseTimer);
+            document.getElementById('reset-timer').addEventListener('click', resetTimer);
+            
+            // লক্ষ্য সেট করা
+            document.getElementById('set-goal').addEventListener('click', setGoal);
+            
+            // ট্যাব কন্ট্রোল
+            setupTabs();
+            
+            // ভয়েস কমান্ড সেটআপ
+            setupVoiceCommands();
+            
+            // ডেটা লোড করা
+            loadTasks();
+            loadGoals();
+            loadAchievements();
+            loadUserData();
+            
+            // চার্ট ইনিশিয়ালাইজেশন
+            initializeCharts();
+        }
+        
+        // ১. স্মার্ট টাস্ক সুপারিশ সিস্টেম
+        function getTaskRecommendations() {
+            const userPatterns = analyzeUserPatterns();
+            const timeOfDay = new Date().getHours();
+            const dayOfWeek = new Date().getDay();
+            const pendingTasks = getPendingTasksCount();
+            
+            let recommendations = [];
+            
+            // সময়ভিত্তিক সুপারিশ
+            if (timeOfDay >= 6 && timeOfDay <= 10) {
+                recommendations.push("সকালের রুটিন সম্পন্ন করুন");
+                recommendations.push("দৈনিক পরিকল্পনা তৈরি করুন");
+            }
+            
+            if (timeOfDay >= 14 && timeOfDay <= 16) {
+                recommendations.push("দুপুরের পরে ছোট ব্রেক নিন");
+            }
+            
+            if (timeOfDay >= 20 && timeOfDay <= 23) {
+                recommendations.push("পরের দিনের প্রস্তুতি নিন");
+                recommendations.push("রিল্যাক্সেশন এক্টিভিটি করুন");
+            }
+            
+            // কাজভিত্তিক সুপারিশ
+            if (pendingTasks > 3) {
+                recommendations.push("বাকি কাজগুলো প্রাধান্য অনুযায়ী সাজান");
+            }
+            
+            const completedToday = getCompletedTasksToday();
+            if (completedToday.length === 0) {
+                recommendations.push("ছোট একটি কাজ দিয়ে শুরু করুন");
+            }
+            
+            // র্যান্ডম অনুপ্রেরণামূলক বার্তা
+            const motivationalMessages = [
+                "একটি সময়ে একটি কাজে ফোকাস করুন",
+                "বড় কাজকে ছোট অংশে ভাগ করুন",
+                "নিয়মিত ব্রেক নিন",
+                "আপনার অগ্রগতি ট্র্যাক করুন"
+            ];
+            
+            recommendations.push(motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)]);
+            
+            return recommendations;
+        }
+        
+        function analyzeUserPatterns() {
+            // ব্যবহারকারীর প্যাটার্ন অ্যানালাইসিস
+            const completedTasks = tasks.filter(task => task.completed);
+            const completionRate = completedTasks.length / tasks.length;
+            
+            const morningTasks = tasks.filter(task => {
+                const taskHour = new Date(task.createdAt).getHours();
+                return taskHour >= 6 && taskHour <= 12 && task.completed;
+            });
+            
+            const eveningTasks = tasks.filter(task => {
+                const taskHour = new Date(task.createdAt).getHours();
+                return taskHour >= 18 && taskHour <= 23 && task.completed;
+            });
+            
+            return {
+                completionRate,
+                isMorningPerson: morningTasks.length > eveningTasks.length,
+                productiveDays: getProductiveDays()
+            };
+        }
+        
+        function getProductiveDays() {
+            const dayCount = {
+                0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0
+            };
+            
+            tasks.filter(task => task.completed).forEach(task => {
+                const day = new Date(task.createdAt).getDay();
+                dayCount[day]++;
+            });
+            
+            return dayCount;
+        }
+        
+        function renderTaskRecommendations() {
+            const container = document.getElementById('task-recommendations');
+            const recommendations = getTaskRecommendations();
+            
+            container.innerHTML = '';
+            
+            recommendations.forEach(rec => {
+                const div = document.createElement('div');
+                div.className = 'recommendation-item';
+                div.textContent = rec;
+                container.appendChild(div);
+            });
+        }
+        
+        // ২. অটোমেটেড টাইম ব্লকিং
+        function autoScheduleTasks() {
+            const todayTasks = getTodayTasks().filter(task => !task.completed);
+            const timeSlots = getAvailableTimeSlots();
+            
+            // প্রাধান্য অনুযায়ী সাজানো
+            const priorityOrder = { high: 1, medium: 2, low: 3 };
+            todayTasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+            
+            // সময় ব্লকগুলো রিসেট করা
+            document.querySelectorAll('.time-block').forEach(block => {
+                block.classList.remove('booked');
+                block.classList.remove('selected');
+            });
+            
+            // কাজগুলো সময় স্লটে অ্যাসাইন করা
+            todayTasks.forEach((task, index) => {
+                if (index < timeSlots.length) {
+                    assignTaskToTimeSlot(task, timeSlots[index]);
+                }
+            });
+        }
+        
+        function getAvailableTimeSlots() {
+            const slots = [];
+            document.querySelectorAll('.time-block').forEach(block => {
+                if (!block.classList.contains('booked')) {
+                    slots.push(block);
+                }
+            });
+            return slots;
+        }
+        
+        function assignTaskToTimeSlot(task, timeSlot) {
+            timeSlot.classList.add('booked');
+            timeSlot.textContent = `${timeSlot.getAttribute('data-time')}\n${task.title}`;
+        }
+        
+        // ৩. প্রোডাক্টিভিটি অ্যানালিটিক্স
+        function generateProductivityReport() {
+            const completedTasks = tasks.filter(task => task.completed);
+            const today = new Date().toDateString();
+            const todayTasks = tasks.filter(task => 
+                new Date(task.createdAt).toDateString() === today
+            );
+            
+            const report = {
+                productiveHours: calculateProductiveHours(),
+                distractionTime: calculateDistractionTime(),
+                peakPerformanceTime: findPeakHours(),
+                taskCompletionRate: calculateCompletionRate(),
+                categoryEfficiency: analyzeCategoryPerformance(),
+                weeklyTrend: getWeeklyTrend(),
+                monthlyProgress: getMonthlyProgress()
+            };
+            
+            return report;
+        }
+        
+        function calculateProductiveHours() {
+            const completedTasks = tasks.filter(task => task.completed);
+            const totalMinutes = completedTasks.reduce((sum, task) => sum + task.time, 0);
+            return (totalMinutes / 60).toFixed(1);
+        }
+        
+        function findPeakHours() {
+            const hourCount = {};
+            for (let i = 0; i < 24; i++) {
+                hourCount[i] = 0;
+            }
+            
+            tasks.filter(task => task.completed).forEach(task => {
+                const hour = new Date(task.createdAt).getHours();
+                hourCount[hour] += task.time;
+            });
+            
+            let peakHour = 0;
+            let maxTime = 0;
+            
+            for (const [hour, time] of Object.entries(hourCount)) {
+                if (time > maxTime) {
+                    maxTime = time;
+                    peakHour = hour;
+                }
+            }
+            
+            return `${peakHour}:00 - ${parseInt(peakHour) + 1}:00`;
+        }
+        
+        function renderProductivityAnalytics() {
+            const report = generateProductivityReport();
+            
+            document.getElementById('peak-time').textContent = report.peakPerformanceTime;
+            document.getElementById('avg-completion-time').textContent = `${report.taskCompletionRate}%`;
+            document.getElementById('best-day').textContent = getBestDayOfWeek();
+            document.getElementById('weekly-success-rate').textContent = `${report.weeklyTrend.successRate}%`;
+            document.getElementById('monthly-productive-time').textContent = `${report.monthlyProgress.totalHours} ঘন্টা`;
+            document.getElementById('best-category').textContent = report.categoryEfficiency.bestCategory;
+        }
+        
+        // ৪. গোল সেটিং ও ট্র্যাকিং
+        function setGoal() {
+            const category = document.getElementById('goal-category').value;
+            const target = parseInt(document.getElementById('goal-target').value);
+            
+            const goal = {
+                category,
+                target,
+                currentProgress: 0,
+                createdAt: new Date().toISOString(),
+                deadline: getWeekEndDate()
+            };
+            
+            // Firebase-এ গোল সেভ করা
+            const goalsRef = database.ref('goals');
+            goalsRef.push(goal);
+            
+            showNotification('লক্ষ্য সফলভাবে নির্ধারণ করা হয়েছে!');
+        }
+        
+        function loadGoals() {
+            const goalsRef = database.ref('goals');
+            
+            goalsRef.on('value', (snapshot) => {
+                goals = [];
+                snapshot.forEach((childSnapshot) => {
+                    const goal = childSnapshot.val();
+                    goal.id = childSnapshot.key;
+                    goals.push(goal);
+                });
+                
+                renderGoals();
+                trackGoalProgress();
+            });
+        }
+        
+        function renderGoals() {
+            const container = document.getElementById('goals-list');
+            container.innerHTML = '';
+            
+            if (goals.length === 0) {
+                container.innerHTML = '<p>কোন লক্ষ্য নির্ধারণ করা হয়নি</p>';
+                return;
+            }
+            
+            goals.forEach(goal => {
+                const progress = (goal.currentProgress / goal.target) * 100;
+                const progressBar = progress > 100 ? 100 : progress;
+                
+                const div = document.createElement('div');
+                div.className = 'goal-progress-item';
+                div.innerHTML = `
+                    <div class="category-header">
+                        <span>${getCategoryText(goal.category)}</span>
+                        <span>${goal.currentProgress.toFixed(1)}/${goal.target} ঘন্টা</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${progressBar}%"></div>
+                    </div>
+                    <p>${progress.toFixed(1)}% সম্পূর্ণ</p>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+        
+        function trackGoalProgress() {
+            goals.forEach(goal => {
+                const categoryTasks = tasks.filter(task => 
+                    task.category === goal.category && 
+                    task.completed &&
+                    isSameWeek(new Date(task.createdAt), new Date())
+                );
+                
+                const totalTime = categoryTasks.reduce((sum, task) => sum + task.time, 0) / 60;
+                goal.currentProgress = totalTime;
+                
+                // Firebase-এ আপডেট করা
+                const goalRef = database.ref('goals/' + goal.id);
+                goalRef.update({ currentProgress: totalTime });
+                
+                // লক্ষ্য অর্জন চেক করা
+                if (totalTime >= goal.target && !goal.achieved) {
+                    goal.achieved = true;
+                    goalRef.update({ achieved: true });
+                    unlockAchievement(`${getCategoryText(goal.category)} মাস্টার`);
+                    addPoints(50);
+                }
+            });
+        }
+        
+        // ৫. পোমোডোরো টাইমার ইন্টিগ্রেশন
+        function startTimer() {
+            if (isTimerRunning) return;
+            
+            const selectedTask = document.getElementById('current-task-timer').value;
+            if (selectedTask) {
+                currentTimerTask = tasks.find(task => task.id === selectedTask);
+            }
+            
+            isTimerRunning = true;
+            timerInterval = setInterval(updateTimer, 1000);
+            document.getElementById('start-timer').disabled = true;
+            
+            showNotification('টাইমার শুরু হয়েছে! ফোকাস রাখুন।');
+        }
+        
+        function pauseTimer() {
+            if (!isTimerRunning) return;
+            
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+            document.getElementById('start-timer').disabled = false;
+            
+            showNotification('টাইমার বিরতিতে আছে।');
+        }
+        
+        function resetTimer() {
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+            timerSeconds = 25 * 60;
+            updateTimerDisplay();
+            document.getElementById('start-timer').disabled = false;
+            
+            showNotification('টাইমার রিসেট করা হয়েছে।');
+        }
+        
+        function updateTimer() {
+            if (timerSeconds > 0) {
+                timerSeconds--;
+                updateTimerDisplay();
+            } else {
+                // টাইমার শেষ
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                document.getElementById('start-timer').disabled = false;
+                
+                // কাজটি সম্পূর্ণ হিসেবে মার্ক করা
+                if (currentTimerTask) {
+                    toggleTaskCompletion(currentTimerTask.id);
+                }
+                
+                // ব্রেক টাইমার শুরু করা
+                timerSeconds = 5 * 60;
+                updateTimerDisplay();
+                
+                showNotification('টাইমার শেষ! ব্রেক নিন।');
+                addPoints(10);
+                
+                // ব্রেক শেষে স্বয়ংক্রিয়ভাবে আবার কাজের টাইমার শুরু
+                setTimeout(() => {
+                    if (confirm('ব্রেক শেষ! আবার কাজ শুরু করবেন?')) {
+                        timerSeconds = 25 * 60;
+                        startTimer();
+                    }
+                }, 5000);
+            }
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // ৬. ডিপ কাজ অ্যানালাইসিস
+        function analyzeTaskPatterns() {
+            const completedTasks = tasks.filter(task => task.completed);
+            
+            if (completedTasks.length === 0) {
+                return {
+                    averageCompletionTime: 0,
+                    mostProductiveDay: 'ডেটা নেই',
+                    frequentDistractions: [],
+                    optimalTaskDuration: 30,
+                    successFactors: []
+                };
+            }
+            
+            // গড় কাজ সম্পূর্ণ সময়
+            const totalTime = completedTasks.reduce((sum, task) => sum + task.time, 0);
+            const averageCompletionTime = totalTime / completedTasks.length;
+            
+            // সবচেয়ে উৎপাদনশীল দিন
+            const dayCount = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+            completedTasks.forEach(task => {
+                const day = new Date(task.createdAt).getDay();
+                dayCount[day]++;
+            });
+            
+            const mostProductiveDay = Object.keys(dayCount).reduce((a, b) => 
+                dayCount[a] > dayCount[b] ? a : b
+            );
+            
+            const dayNames = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+            
+            return {
+                averageCompletionTime: Math.round(averageCompletionTime),
+                mostProductiveDay: dayNames[mostProductiveDay],
+                frequentDistractions: identifyDistractions(),
+                optimalTaskDuration: findOptimalDuration(),
+                successFactors: identifySuccessPatterns()
+            };
+        }
+        
+        // ৭. মোটিভেশন ও রিওয়ার্ড সিস্টেম
+        const rewardSystem = {
+            streaks: 0,
+            points: 0,
+            achievements: [],
+            
+            checkAchievements: function() {
+                const todayTasks = getCompletedTasksToday();
+                if (todayTasks.length >= 5) {
+                    this.unlockAchievement("প্রোডাক্টিভ ডে");
+                }
+                
+                if (this.streaks >= 7) {
+                    this.unlockAchievement("সপ্তাহের তারকা");
+                }
+                
+                const highPriorityCompleted = todayTasks.filter(task => 
+                    task.priority === 'high'
+                ).length;
+                
+                if (highPriorityCompleted >= 3) {
+                    this.unlockAchievement("প্রাধান্য মাস্টার");
+                }
+            },
+            
+            unlockAchievement: function(name) {
+                if (!this.achievements.includes(name)) {
+                    this.achievements.push(name);
+                    this.addPoints(25);
+                    showNotification(`অর্জন unlocked: ${name}!`);
+                    
+                    // Firebase-এ সেভ করা
+                    const achievementsRef = database.ref('achievements');
+                    achievementsRef.push({
+                        name,
+                        unlockedAt: new Date().toISOString()
+                    });
+                }
+            },
+            
+            addPoints: function(points) {
+                this.points += points;
+                updateRewardDisplay();
+                
+                // লেভেল আপ চেক করা
+                const neededForNextLevel = currentLevel * 10;
+                if (this.points >= neededForNextLevel) {
+                    currentLevel++;
+                    showNotification(`লেভেল আপ! এখন আপনি লেভেল ${currentLevel} এ আছেন।`);
+                }
+                
+                // Firebase-এ আপডেট করা
+                const userRef = database.ref('user');
+                userRef.update({
+                    points: this.points,
+                    level: currentLevel
+                });
+            }
+        };
+        
+        function loadAchievements() {
+            const achievementsRef = database.ref('achievements');
+            
+            achievementsRef.on('value', (snapshot) => {
+                achievements = [];
+                snapshot.forEach((childSnapshot) => {
+                    const achievement = childSnapshot.val();
+                    achievements.push(achievement.name);
+                });
+                
+                renderAchievements();
+            });
+        }
+        
+        function renderAchievements() {
+            const container = document.getElementById('achievements-container');
+            container.innerHTML = '';
+            
+            if (achievements.length === 0) {
+                container.innerHTML = '<p>কোন অর্জন এখনও unlocked হয়নি</p>';
+                return;
+            }
+            
+            achievements.forEach(achievement => {
+                const badge = document.createElement('span');
+                badge.className = 'achievement-badge';
+                badge.textContent = achievement;
+                container.appendChild(badge);
+            });
+        }
+        
+        function updateRewardDisplay() {
+            document.getElementById('user-points').textContent = rewardSystem.points;
+            
+            const neededForNextLevel = currentLevel * 10;
+            const progress = (rewardSystem.points % neededForNextLevel) / neededForNextLevel * 100;
+            
+            document.getElementById('level-progress').style.width = `${progress}%`;
+            document.getElementById('next-level').textContent = neededForNextLevel;
+        }
+        
+        function loadUserData() {
+            const userRef = database.ref('user');
+            
+            userRef.on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (userData) {
+                    rewardSystem.points = userData.points || 0;
+                    currentLevel = userData.level || 1;
+                    updateRewardDisplay();
+                }
+            });
+        }
+        
+        // ৮. স্মার্ট নোটিফিকেশন
+        function smartReminders() {
+            const overdueTasks = getOverdueTasks();
+            const highPriorityTasks = getHighPriorityTasks();
+            
+            if (overdueTasks.length > 0) {
+                showNotification(`আপনার ${overdueTasks.length}টি কাজ বাকি আছে`);
+            }
+            
+            if (highPriorityTasks.length > 0 && isWorkingHours()) {
+                showNotification("উচ্চ প্রাধান্যের কাজগুলো করুন");
+            }
+            
+            // দৈনিক লক্ষ্য রিমাইন্ডার
+            const goalsProgress = goals.filter(goal => 
+                goal.currentProgress < goal.target * 0.5
+            );
+            
+            if (goalsProgress.length > 0 && new Date().getHours() === 18) {
+                showNotification("আপনার দৈনিক লক্ষ্য অর্জনের জন্য আরও কাজ করুন");
+            }
+        }
+        
+        // ৯. ডেটা ভিজুয়ালাইজেশন
+        function initializeCharts() {
+            const ctx = document.getElementById('productivityChart').getContext('2d');
+            
+            // সাপ্তাহিক ডেটা প্রস্তুত করা
+            const weeklyData = getWeeklyData();
+            
+            window.productivityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: weeklyData.days,
+                    datasets: [
+                        {
+                            label: 'সম্পূর্ণ কাজ',
+                            data: weeklyData.completedTasks,
+                            backgroundColor: '#4361ee',
+                            borderColor: '#3f37c9',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'মোট কাজ',
+                            data: weeklyData.totalTasks,
+                            backgroundColor: '#4cc9f0',
+                            borderColor: '#3a0ca3',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'কাজের সংখ্যা'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'সপ্তাহের দিন'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function getWeeklyData() {
+            const days = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'];
+            const completedTasks = [0, 0, 0, 0, 0, 0, 0];
+            const totalTasks = [0, 0, 0, 0, 0, 0, 0];
+            
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            
+            tasks.forEach(task => {
+                const taskDate = new Date(task.createdAt);
+                if (taskDate >= oneWeekAgo) {
+                    const day = taskDate.getDay();
+                    totalTasks[day]++;
+                    
+                    if (task.completed) {
+                        completedTasks[day]++;
+                    }
+                }
+            });
+            
+            return {
+                days,
+                completedTasks,
+                totalTasks
+            };
+        }
+        
+        // ১০. মাল্টি-ডিভাইস সিঙ্ক
+        const syncManager = {
+            lastSync: null,
+            
+            syncData: function() {
+                if (this.isOnline()) {
+                    this.updateLastSync();
+                    showNotification('ডেটা সিঙ্ক্রোনাইজড হয়েছে');
+                } else {
+                    showNotification('ইন্টারনেট সংযোগ নেই, অফলাইন মোড');
+                }
+            },
+            
+            isOnline: function() {
+                return navigator.onLine;
+            },
+            
+            updateLastSync: function() {
+                this.lastSync = new Date();
+                // Firebase-এ শেষ সিঙ্ক টাইম সেভ করা
+                const syncRef = database.ref('lastSync');
+                syncRef.set(this.lastSync.toISOString());
+            }
+        };
+        
+        // ১১. ভয়েস কমান্ড ও AI অ্যাসিস্টেন্ট
+        function setupVoiceCommands() {
+            const voiceBtn = document.getElementById('voice-command-btn');
+            const voiceStatus = document.getElementById('voice-status');
+            
+            // ব্রাউজার সাপোর্ট চেক করা
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                voiceStatus.textContent = 'ভয়েস কমান্ড সাপোর্টেড নয়';
+                voiceBtn.style.opacity = '0.5';
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'bn-BD';
+            
+            voiceBtn.addEventListener('click', function() {
+                recognition.start();
+                voiceStatus.textContent = 'শুনছি...';
+            });
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                voiceStatus.textContent = `আপনি বলেছেন: "${transcript}"`;
+                processVoiceCommand(transcript);
+            };
+            
+            recognition.onerror = function(event) {
+                voiceStatus.textContent = 'ত্রুটি হয়েছে, আবার চেষ্টা করুন';
+            };
+            
+            recognition.onend = function() {
+                voiceStatus.textContent = 'মাইক্রোফোন চাপুন';
+            };
+        }
+        
+        function processVoiceCommand(command) {
+            command = command.toLowerCase();
+            
+            if (command.includes('নতুন কাজ') || command.includes('কাজ যোগ')) {
+                const taskName = extractTaskName(command);
+                if (taskName) {
+                    addTaskFromVoice(taskName);
+                }
+            } else if (command.includes('কাজ দেখাও') || command.includes('কাজের তালিকা')) {
+                showNotification('আজকের কাজের তালিকা দেখানো হচ্ছে');
+                document.getElementById('task-list').scrollIntoView();
+            } else if (command.includes('টাইমার শুরু') || command.includes('টাইমার')) {
+                startTimer();
+            } else if (command.includes('কাজ সম্পূর্ণ') || command.includes('সম্পূর্ণ কর')) {
+                const taskName = extractTaskName(command);
+                if (taskName) {
+                    completeTaskFromVoice(taskName);
+                }
+            } else {
+                showNotification('কমান্ডটি বুঝতে পারিনি। আবার চেষ্টা করুন।');
+            }
+        }
+        
+        function extractTaskName(command) {
+            // কমান্ড থেকে কাজের নাম এক্সট্র্যাক্ট করা
+            const patterns = [
+                /নতুন কাজ যোগ কর (.+)/,
+                /কাজ যোগ কর (.+)/,
+                /কাজ সম্পূর্ণ কর (.+)/,
+                /সম্পূর্ণ কর (.+)/
+            ];
+            
+            for (const pattern of patterns) {
+                const match = command.match(pattern);
+                if (match) {
+                    return match[1];
+                }
+            }
+            
+            return null;
+        }
+        
+        function addTaskFromVoice(taskName) {
+            const task = {
+                title: taskName,
+                description: "ভয়েস কমান্ড দ্বারা যোগ করা",
+                priority: "medium",
+                category: "other",
+                time: 30,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            const tasksRef = database.ref('tasks');
+            tasksRef.push(task);
+            
+            showNotification(`কাজ যোগ করা হয়েছে: ${taskName}`);
+        }
+        
+        function completeTaskFromVoice(taskName) {
+            const task = tasks.find(t => 
+                t.title.toLowerCase().includes(taskName.toLowerCase()) && 
+                !t.completed
+            );
+            
+            if (task) {
+                toggleTaskCompletion(task.id);
+                showNotification(`কাজ সম্পূর্ণ: ${task.title}`);
+            } else {
+                showNotification('কাজটি খুঁজে পাওয়া যায়নি');
+            }
+        }
+        
+        // ১২. অ্যাডভান্সড রিপোর্টিং
+        function generateComprehensiveReport() {
+            const productivityReport = generateProductivityReport();
+            const taskAnalysis = analyzeTaskPatterns();
+            const goalProgress = calculateGoalProgress();
+            
+            return {
+                executiveSummary: getExecutiveSummary(),
+                timeAnalysis: productivityReport,
+                productivityInsights: taskAnalysis,
+                goalProgress: goalProgress,
+                recommendations: getPersonalizedRecommendations(),
+                comparativeAnalysis: getComparativeAnalysis()
+            };
+        }
+        
+        function getExecutiveSummary() {
+            const completedToday = getCompletedTasksToday().length;
+            const totalToday = getTodayTasks().length;
+            const completionRate = totalToday > 0 ? (completedToday / totalToday) * 100 : 0;
+            
+            return {
+                completedTasks: completedToday,
+                totalTasks: totalToday,
+                completionRate: Math.round(completionRate),
+                productiveHours: calculateProductiveHours(),
+                streak: rewardSystem.streaks
+            };
+        }
+        
+        // ইউটিলিটি ফাংশন
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        function getTodayTasks() {
+            const today = new Date().toDateString();
+            return tasks.filter(task => {
+                const taskDate = new Date(task.createdAt).toDateString();
+                return taskDate === today;
+            });
+        }
+        
+        function getCompletedTasksToday() {
+            return getTodayTasks().filter(task => task.completed);
+        }
+        
+        function getPendingTasksCount() {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayString = yesterday.toDateString();
+            
+            return tasks.filter(task => {
+                const taskDate = new Date(task.createdAt).toDateString();
+                return taskDate === yesterdayString && !task.completed;
+            }).length;
+        }
+        
+        function getCategoryText(category) {
+            const categoryTexts = {
+                work: 'চাকুরি',
+                youtube: 'ইউটিউব',
+                personal: 'ব্যক্তিগত',
+                health: 'স্বাস্থ্য',
+                other: 'অন্যান্য'
+            };
+            return categoryTexts[category];
+        }
+        
+        function getPriorityText(priority) {
+            const priorityTexts = {
+                low: 'কম প্রাধান্য',
+                medium: 'মধ্যম প্রাধান্য',
+                high: 'উচ্চ প্রাধান্য'
+            };
+            return priorityTexts[priority];
+        }
+        
+        function isSameWeek(date1, date2) {
+            const firstDayOfWeek = new Date(date2);
+            firstDayOfWeek.setDate(firstDayOfWeek.getDate() - firstDayOfWeek.getDay());
+            
+            const lastDayOfWeek = new Date(firstDayOfWeek);
+            lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+            
+            return date1 >= firstDayOfWeek && date1 <= lastDayOfWeek;
+        }
+        
+        function getWeekEndDate() {
+            const today = new Date();
+            const endDate = new Date(today);
+            endDate.setDate(today.getDate() + (7 - today.getDay()));
+            return endDate.toISOString();
+        }
+        
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // সব ট্যাব এবং কনটেন্ট থেকে active ক্লাস রিমুভ করা
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // বর্তমান ট্যাবে active ক্লাস যোগ করা
+                    tab.classList.add('active');
+                    
+                    // সংশ্লিষ্ট কনটেন্ট শো করা
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+        }
+        
+        // Firebase থেকে কাজগুলো লোড করা
+        function loadTasks() {
+            const tasksRef = database.ref('tasks');
+            
+            tasksRef.on('value', (snapshot) => {
+                tasks = [];
+                snapshot.forEach((childSnapshot) => {
+                    const task = childSnapshot.val();
+                    task.id = childSnapshot.key;
+                    tasks.push(task);
+                });
+                
+                renderTasks();
+                renderPendingTasks();
+                renderTaskRecommendations();
+                updateRealityDay();
+                updateProgress();
+                updateMonthlyData();
+                updateTaskDropdown();
+                autoScheduleTasks();
+                renderProductivityAnalytics();
+                rewardSystem.checkAchievements();
+                smartReminders();
+                
+                // চার্ট আপডেট
+                if (window.productivityChart) {
+                    window.productivityChart.update();
+                }
+            });
+        }
+        
+        // কাজ ফর্ম হ্যান্ডলার
+        function handleTaskSubmit(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('task-title').value;
+            const description = document.getElementById('task-description').value;
+            const priority = document.getElementById('task-priority').value;
+            const category = document.getElementById('task-category').value;
+            const time = parseInt(document.getElementById('task-time').value);
+            
+            const task = {
+                title,
+                description,
+                priority,
+                category,
+                time,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Firebase-এ কাজ যোগ করা
+            const tasksRef = database.ref('tasks');
+            tasksRef.push(task);
+            
+            // ফর্ম রিসেট
+            document.getElementById('task-form').reset();
+            document.getElementById('task-priority').value = 'high';
+            document.querySelectorAll('.priority-badge').forEach(b => b.classList.remove('priority-selected'));
+            document.querySelector('.priority-high').classList.add('priority-selected');
+            
+            // নোটিফিকেশন দেখানো
+            showNotification('কাজটি সফলভাবে যোগ করা হয়েছে!');
+            addPoints(5);
+        }
+        
+        // কাজগুলো দেখানো
+        function renderTasks() {
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<p>কোন কাজ যোগ করা হয়নি</p>';
+                return;
+            }
+            
+            // আজকের কাজগুলো ফিল্টার করা
+            const todayTasks = getTodayTasks();
+            
+            if (todayTasks.length === 0) {
+                taskList.innerHTML = '<p>আজকের জন্য কোন কাজ নেই</p>';
+                return;
+            }
+            
+            // প্রাধান্য অনুযায়ী সাজানো
+            const priorityOrder = { high: 1, medium: 2, low: 3 };
+            todayTasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+            
+            todayTasks.forEach(task => {
+                const taskItem = document.createElement('li');
+                taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
+                
+                const priorityClass = `priority-${task.priority}`;
+                
+                taskItem.innerHTML = `
+                    <div class="task-info">
+                        <h3>${task.title}</h3>
+                        <p>${task.description}</p>
+                        <div class="task-meta">
+                            <span class="${priorityClass}">${getPriorityText(task.priority)}</span>
+                            <span>${getCategoryText(task.category)}</span>
+                            <span>${task.time} মিনিট</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn-complete" data-id="${task.id}">${task.completed ? 'পুনরায় শুরু' : 'সম্পূর্ণ'}</button>
+                        <button class="btn-delete" data-id="${task.id}">মুছুন</button>
+                    </div>
+                `;
+                
+                taskList.appendChild(taskItem);
+            });
+            
+            // কাজ সম্পূর্ণ এবং মুছুন বাটন ইভেন্ট যোগ করা
+            document.querySelectorAll('.btn-complete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = this.getAttribute('data-id');
+                    toggleTaskCompletion(taskId);
+                });
+            });
+            
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = this.getAttribute('data-id');
+                    deleteTask(taskId);
+                });
+            });
+        }
+        
+        // বাকি কাজগুলো দেখানো
+        function renderPendingTasks() {
+            const pendingTasksContainer = document.getElementById('pending-tasks-container');
+            const pendingTasksList = document.getElementById('pending-tasks-list');
+            pendingTasksList.innerHTML = '';
+            
+            // গত দিনের বাকি কাজগুলো খুঁজে বের করা
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayString = yesterday.toDateString();
+            
+            const pendingTasks = tasks.filter(task => {
+                const taskDate = new Date(task.createdAt).toDateString();
+                return taskDate === yesterdayString && !task.completed;
+            });
+            
+            if (pendingTasks.length === 0) {
+                pendingTasksContainer.style.display = 'none';
+                return;
+            }
+            
+            // বাকি কাজগুলো দেখানো
+            pendingTasksContainer.style.display = 'block';
+            
+            pendingTasks.forEach(task => {
+                const taskItem = document.createElement('li');
+                taskItem.className = 'pending-task-item';
+                
+                const priorityClass = `priority-${task.priority}`;
+                
+                taskItem.innerHTML = `
+                    <div class="pending-task-info">
+                        <h3>${task.title}</h3>
+                        <p>${task.description}</p>
+                        <div class="pending-task-meta">
+                            <span class="${priorityClass}">${getPriorityText(task.priority)}</span>
+                            <span>${getCategoryText(task.category)}</span>
+                            <span>${task.time} মিনিট</span>
+                        </div>
+                    </div>
+                    <div class="pending-task-actions">
+                        <button class="btn-add-today" data-id="${task.id}">আজ যোগ করুন</button>
+                        <button class="btn-ignore" data-id="${task.id}">উপেক্ষা করুন</button>
+                    </div>
+                `;
+                
+                pendingTasksList.appendChild(taskItem);
+            });
+            
+            // বাকি কাজগুলো আজকের দিনে যোগ করার বাটন ইভেন্ট
+            document.querySelectorAll('.btn-add-today').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = this.getAttribute('data-id');
+                    moveTaskToToday(taskId);
+                });
+            });
+            
+            // বাকি কাজগুলো উপেক্ষা করার বাটন ইভেন্ট
+            document.querySelectorAll('.btn-ignore').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = this.getAttribute('data-id');
+                    ignorePendingTask(taskId);
+                });
+            });
+            
+            // সবগুলো বাকি কাজ আজকের দিনে যোগ করার বাটন ইভেন্ট
+            document.getElementById('add-all-pending').addEventListener('click', function() {
+                moveAllPendingTasksToToday();
+            });
+        }
+        
+        // কাজ সম্পূর্ণ টগল করা
+        function toggleTaskCompletion(taskId) {
+            const task = tasks.find(task => task.id === taskId);
+            if (!task) return;
+            
+            const taskRef = database.ref('tasks/' + taskId);
+            taskRef.update({
+                completed: !task.completed
+            });
+            
+            if (!task.completed) {
+                addPoints(10);
+                showNotification('কাজটি সম্পূর্ণ হয়েছে!');
+            }
+        }
+        
+        // কাজ মুছুন
+        function deleteTask(taskId) {
+            const taskRef = database.ref('tasks/' + taskId);
+            taskRef.remove();
+            
+            // নোটিফিকেশন দেখানো
+            showNotification('কাজটি মুছে ফেলা হয়েছে!');
+        }
+        
+        // বাকি কাজ আজকের দিনে যোগ করা
+        function moveTaskToToday(taskId) {
+            const task = tasks.find(task => task.id === taskId);
+            if (!task) return;
+            
+            // নতুন তারিখ সহ কাজ আপডেট করা
+            const taskRef = database.ref('tasks/' + taskId);
+            taskRef.update({
+                createdAt: new Date().toISOString()
+            });
+            
+            // নোটিফিকেশন দেখানো
+            showNotification('কাজটি আজকের দিনে যোগ করা হয়েছে!');
+        }
+        
+        // সবগুলো বাকি কাজ আজকের দিনে যোগ করা
+        function moveAllPendingTasksToToday() {
+            // গত দিনের বাকি কাজগুলো খুঁজে বের করা
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayString = yesterday.toDateString();
+            
+            const pendingTasks = tasks.filter(task => {
+                const taskDate = new Date(task.createdAt).toDateString();
+                return taskDate === yesterdayString && !task.completed;
+            });
+            
+            // প্রতিটি বাকি কাজের তারিখ আপডেট করা
+            pendingTasks.forEach(task => {
+                const taskRef = database.ref('tasks/' + task.id);
+                taskRef.update({
+                    createdAt: new Date().toISOString()
+                });
+            });
+            
+            // নোটিফিকেশন দেখানো
+            showNotification('সবগুলো বাকি কাজ আজকের দিনে যোগ করা হয়েছে!');
+        }
+        
+        // বাকি কাজ উপেক্ষা করা
+        function ignorePendingTask(taskId) {
+            const taskRef = database.ref('tasks/' + taskId);
+            taskRef.remove();
+            
+            // নোটিফিকেশন দেখানো
+            showNotification('কাজটি উপেক্ষা করা হয়েছে!');
+        }
+        
+        // ব্যাস্তব দিন আপডেট করা
+        function updateRealityDay() {
+            const todayTasks = getCompletedTasksToday();
+            
+            const categoryTimes = {
+                youtube: 0,
+                work: 0,
+                personal: 0,
+                health: 0,
+                sleep: 0
+            };
+            
+            todayTasks.forEach(task => {
+                categoryTimes[task.category] += task.time / 60; // মিনিট থেকে ঘন্টায় রূপান্তর
+            });
+            
+            document.getElementById('reality-youtube').textContent = categoryTimes.youtube.toFixed(1);
+            document.getElementById('reality-work').textContent = categoryTimes.work.toFixed(1);
+            document.getElementById('reality-personal').textContent = categoryTimes.personal.toFixed(1);
+            document.getElementById('reality-health').textContent = categoryTimes.health.toFixed(1);
+            document.getElementById('reality-sleep').textContent = categoryTimes.sleep.toFixed(1);
+        }
+        
+        // অগ্রগতি আপডেট করা
+        function updateProgress() {
+            const todayTasks = getTodayTasks();
+            
+            if (todayTasks.length === 0) {
+                document.getElementById('daily-progress').style.width = '0%';
+                document.getElementById('progress-text').textContent = '0% সম্পূর্ণ';
+                return;
+            }
+            
+            const completedTasks = todayTasks.filter(task => task.completed).length;
+            const progress = (completedTasks / todayTasks.length) * 100;
+            
+            document.getElementById('daily-progress').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `${Math.round(progress)}% সম্পূর্ণ`;
+        }
+        
+        // টাস্ক ড্রপডাউন আপডেট করা
+        function updateTaskDropdown() {
+            const dropdown = document.getElementById('current-task-timer');
+            dropdown.innerHTML = '<option value="">কাজ নির্বাচন করুন</option>';
+            
+            const todayTasks = getTodayTasks().filter(task => !task.completed);
+            
+            todayTasks.forEach(task => {
+                const option = document.createElement('option');
+                option.value = task.id;
+                option.textContent = task.title;
+                dropdown.appendChild(option);
+            });
+        }
+        
+        // মাসিক ডেটা ম্যানেজমেন্ট
+        let currentViewMonth = new Date().getMonth();
+        let currentViewYear = new Date().getFullYear();
+        
+        // মাসিক ডেটা আপডেট করা
+        function updateMonthlyData() {
+            const today = new Date();
+            const month = today.getMonth();
+            const year = today.getFullYear();
+            
+            const monthlyTasks = tasks.filter(task => {
+                const taskDate = new Date(task.createdAt);
+                return taskDate.getMonth() === month && 
+                       taskDate.getFullYear() === year;
+            });
+            
+            // মাসিক ডেটা ক্যালকুলেশন
+            const monthlyData = {
+                totalTasks: monthlyTasks.length,
+                completedTasks: monthlyTasks.filter(task => task.completed).length,
+                totalTime: 0,
+                categories: {
+                    youtube: 0,
+                    work: 0,
+                    personal: 0,
+                    health: 0,
+                    sleep: 0,
+                    other: 0
+                }
+            };
+            
+            monthlyTasks.forEach(task => {
+                if (task.completed) {
+                    monthlyData.totalTime += task.time / 60; // ঘন্টায়
+                    monthlyData.categories[task.category] += task.time / 60;
+                }
+            });
+            
+            // মাসিক ভিউ আপডেট
+            updateMonthlyView(monthlyData);
+        }
+        
+        // মাসিক ভিউ আপডেট করা
+        function updateMonthlyView(monthlyData) {
+            const monthNames = [
+                'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
+                'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'
+            ];
+            
+            // মাসের নাম আপডেট
+            document.getElementById('current-month').textContent = 
+                `${monthNames[currentViewMonth]} ${currentViewYear}`;
+            
+            // স্ট্যাটিস্টিক্স আপডেট
+            document.getElementById('monthly-total').textContent = monthlyData.totalTasks;
+            document.getElementById('monthly-completed').textContent = monthlyData.completedTasks;
+            
+            const successRate = monthlyData.totalTasks > 0 ? 
+                Math.round((monthlyData.completedTasks / monthlyData.totalTasks) * 100) : 0;
+            document.getElementById('monthly-success').textContent = `${successRate}%`;
+            
+            document.getElementById('monthly-time').textContent = monthlyData.totalTime.toFixed(1);
+            
+            // ক্যাটাগরি ডিস্ট্রিবিউশন আপডেট
+            updateCategoryDistribution(monthlyData.categories);
+        }
+        
+        // ক্যাটাগরি ডিস্ট্রিবিউশন আপডেট
+        function updateCategoryDistribution(categories) {
+            const container = document.getElementById('category-distribution');
+            container.innerHTML = '';
+            
+            const categoryNames = {
+                youtube: 'ইউটিউব',
+                work: 'চাকুরি',
+                personal: 'ব্যক্তিগত',
+                health: 'স্বাস্থ্য',
+                sleep: 'ঘুম',
+                other: 'অন্যান্য'
+            };
+            
+            Object.keys(categories).forEach(category => {
+                if (categories[category] > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'category-item';
+                    
+                    const header = document.createElement('div');
+                    header.className = 'category-header';
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.textContent = categoryNames[category];
+                    
+                    const valueSpan = document.createElement('span');
+                    valueSpan.textContent = `${categories[category].toFixed(1)} ঘন্টা`;
+                    
+                    header.appendChild(nameSpan);
+                    header.appendChild(valueSpan);
+                    
+                    const progressBar = document.createElement('div');
+                    progressBar.className = 'progress-bar';
+                    
+                    const progress = document.createElement('div');
+                    progress.className = 'progress';
+                    
+                    // প্রগ্রেস বার এর width ক্যালকুলেট করা
+                    const totalHours = Object.values(categories).reduce((a, b) => a + b, 0);
+                    const width = totalHours > 0 ? (categories[category] / totalHours) * 100 : 0;
+                    progress.style.width = `${width}%`;
+                    
+                    progressBar.appendChild(progress);
+                    
+                    div.appendChild(header);
+                    div.appendChild(progressBar);
+                    
+                    container.appendChild(div);
+                }
+            });
+            
+            if (container.innerHTML === '') {
+                container.innerHTML = '<p>এই মাসের জন্য কোন ডেটা নেই</p>';
+            }
+        }
+        
+        // মাস নেভিগেশন
+        document.getElementById('prev-month').addEventListener('click', function() {
+            currentViewMonth--;
+            if (currentViewMonth < 0) {
+                currentViewMonth = 11;
+                currentViewYear--;
+            }
+            updateMonthlyData();
+        });
+        
+        document.getElementById('next-month').addEventListener('click', function() {
+            currentViewMonth++;
+            if (currentViewMonth > 11) {
+                currentViewMonth = 0;
+                currentViewYear++;
+            }
+            updateMonthlyData();
+        });
+        
+        // সময় ব্লক নির্বাচন করা
+        document.querySelectorAll('.time-block').forEach(block => {
+            block.addEventListener('click', function() {
+                if (!this.classList.contains('booked')) {
+                    this.classList.toggle('selected');
+                }
+            });
+        });
+        
+        // সাহায্যকারী ফাংশন
+        function addPoints(points) {
+            rewardSystem.addPoints(points);
+        }
+        
+        function unlockAchievement(name) {
+            rewardSystem.unlockAchievement(name);
+        }
+        
+        // অ্যাপ ইনিশিয়ালাইজেশন
+        window.addEventListener('online', syncManager.syncData);
+        window.addEventListener('offline', () => {
+            showNotification('আপনি অফলাইন মোডে আছেন');
+        });
+        
+        // শুরুতে সিঙ্ক করা
+        setTimeout(syncManager.syncData, 2000);
+    </script>
+</body>
+</html>
